@@ -1,4 +1,4 @@
-export class Comments {
+export class Comment {
   constructor(
     // id
     private _id: number,
