@@ -1,7 +1,33 @@
 <template>
   <div id="app">
-    掲⽰板画⾯
     <!-- 始め -->
+    掲⽰板画⾯
+    <!-- 記事投稿画面は1つ -->
+    <div>
+      <div><input type="text" /></div>
+      <div><textarea name="" id="" cols="30" rows="10"></textarea></div>
+      <div><button type="button">記事投稿</button></div>
+    </div>
+
+    <hr />
+
+    <!-- 投稿内容表示画面 -->
+    <div v-for="article of currentArticleList" :key="article.id">
+      投稿者名：{{ article.name }}
+      <br />
+      投稿内容：
+      <pre>{{ article.content }}</pre>
+      <br />
+      <button type="button">記事削除</button>
+    </div>
+
+    <!-- コメント投稿画面は記事ごとに1つ -->
+    <!-- <div>
+      <div><input type="text" /></div>
+      <div><textarea name="" id="" cols="30" rows="10"></textarea></div>
+      <div><button type="button">コメント投稿</button></div>
+    </div> -->
+
     <!-- 終わり -->
   </div>
 </template>
@@ -11,10 +37,13 @@ import { Component, Vue } from "vue-property-decorator";
 import { Article } from "../types/article";
 import { Comment } from "../types/comment";
 @Component
+/**
+ * 掲示板投稿サイトのvueファイル.
+ */
 export default class Bbs extends Vue {
   // 始め
   //現在の記事一覧
-  private currentArticleList = [];
+  private currentArticleList = new Array<Article>();
   //投稿者名
   private articleName = "";
   //投稿内容
@@ -30,7 +59,9 @@ export default class Bbs extends Vue {
    * Vuexストア内の記事⼀覧(articles)をcurrentArticleListに格納
    */
   created(): void {
-    1 + 1;
+    this.currentArticleList = this["$store"].getters.getArticles;
+    console.dir("response:" + JSON.stringify(this.currentArticleList));
+    console.log(this.currentArticleList[0].name);
   }
 
   /**

@@ -1,3 +1,7 @@
+import { Comment } from "./comment";
+/**
+ * 掲示板サイトの投稿記事情報クラス.
+ */
 export class Article {
   constructor(
     // id

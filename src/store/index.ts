@@ -1,8 +1,12 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { Article } from "../types/article";
+import { Comment } from "../types/comment";
 
 Vue.use(Vuex);
-
+/**
+ * stateに掲示板サイトの投稿情報とコメント情報を持たせたindexファイル.
+ */
 export default new Vuex.Store({
   state: {
     strict: true,
@@ -23,8 +27,8 @@ export default new Vuex.Store({
      * @remarks state内のarticlesを返す
      * @param state
      */
-    getArticles(state) {
-      1 + 1;
+    getArticles(state): Array<Article> {
+      return state.articles;
     },
     // ゲッター終わり
   },

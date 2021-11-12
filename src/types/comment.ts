@@ -1,3 +1,6 @@
+/**
+ * 掲示板サイトのコメント情報クラス.
+ */
 export class Comment {
   constructor(
     // id
