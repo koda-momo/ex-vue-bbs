@@ -4,9 +4,21 @@
     掲⽰板画⾯
     <!-- 記事投稿画面は1つ -->
     <div>
-      <div><input type="text" /></div>
-      <div><textarea name="" id="" cols="30" rows="10"></textarea></div>
-      <div><button type="button">記事投稿</button></div>
+      投稿者名：
+      <div><input type="text" v-model="articleName" /></div>
+      投稿内容：
+      <div>
+        <textarea
+          name=""
+          id=""
+          cols="30"
+          rows="10"
+          v-model="articleContent"
+        ></textarea>
+      </div>
+      <div>
+        <button type="button" v-on:click="addArticle()">記事投稿</button>
+      </div>
     </div>
 
     <hr />
@@ -19,14 +31,24 @@
       <pre>{{ article.content }}</pre>
       <br />
       <button type="button">記事削除</button>
-    </div>
 
-    <!-- コメント投稿画面は記事ごとに1つ -->
-    <!-- <div>
-      <div><input type="text" /></div>
-      <div><textarea name="" id="" cols="30" rows="10"></textarea></div>
-      <div><button type="button">コメント投稿</button></div>
-    </div> -->
+      <!-- コメント表示 -->
+      <div v-for="comment of article.commentList" :key="comment.id">
+        コメント者名：{{ comment.name }}
+        <br />
+        コメント内容：
+        <pre>    {{ comment.content }}</pre>
+      </div>
+      <!-- コメント投稿画面は記事ごとに1つ -->
+      <div>
+        名前：
+        <div><input type="text" /></div>
+        コメント：
+        <div><textarea name="" id="" cols="30" rows="10"></textarea></div>
+        <div><button type="button">コメント投稿</button></div>
+      </div>
+      <hr />
+    </div>
 
     <!-- 終わり -->
   </div>
@@ -67,13 +89,21 @@ export default class Bbs extends Vue {
   /**
    * 記事を追加する.
    * @remarks
-   * 最新の記事IDに１プラスする形で記事IDを作成する
-   * ミューテーションのaddArticleメソッドを呼ぶ
-   * →引数：payload=article: new Articles(新しく発⾏したID,⼊⼒した投稿者名,⼊⼒した投稿内容,[])
-   * ⼊⼒値をフォームからクリアする
+   * 1)最新の記事IDに１プラスする形で記事IDを作成する
+   * 2)ミューテーションのaddArticleメソッドを呼ぶ
+   *   →引数：payload=article: new Articles(新しく発⾏したID,⼊⼒した投稿者名,⼊⼒した投稿内容,[])
+   * 3)⼊⼒値をフォームからクリアする
    */
+  //1)
   addArticle(): void {
-    1 + 1;
+    const newId = this.currentArticleList[0].id + 1;
+    //2)
+    this["$store"].commit("addArticle", {
+      article: new Article(newId, this.articleName, this.articleContent, []),
+    });
+    //3)
+    this.articleName = "";
+    this.articleContent = "";
   }
 
   /**

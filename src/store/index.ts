@@ -25,7 +25,7 @@ export default new Vuex.Store({
     /**
      * 記事一覧を返す.
      * @remarks state内のarticlesを返す
-     * @param state
+     * @param state - ステートオブジェクト
      */
     getArticles(state): Array<Article> {
       return state.articles;
@@ -37,11 +37,11 @@ export default new Vuex.Store({
      * 記事を追加する.
      * @remarks
      * 受け取ったpayload内のarticleをstateのarticlesの0番⽬に追加する
-     * @param state
-     * @param payload articleの配列
+     * @param state - ステートオブジェクト
+     * @param payload - 投稿した記事情報
      */
     addArticle(state, payload) {
-      1 + 1;
+      state.articles.unshift(payload.article);
     },
 
     /**
