@@ -1,0 +1,87 @@
+<template>
+  <div class="Com">
+    <!-- 始め -->
+
+    <!-- コメント投稿画面は記事ごとに1つ -->
+    <div>
+      名前：<span class="error">{{ errorCommentName }}</span>
+      <div><input type="text" v-model="commentName" /></div>
+      コメント：<span class="error">{{ errorComment }}</span>
+      <div>
+        <textarea cols="30" rows="10" v-model="commentContent"></textarea>
+      </div>
+      <button type="button" v-on:click="addComment(articleId)">
+        コメント投稿
+      </button>
+    </div>
+    <hr />
+
+    <!-- 終わり -->
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { Comment } from "../types/comment";
+@Component
+export default class Comme extends Vue {
+  @Prop()
+  //対象の投稿ID(値は親Bbsから受け取り)
+  articleId!: number;
+  //コメント者名
+  private commentName = "";
+  //コメント内容
+  private commentContent = "";
+  //コメント名前についてのエラーメッセージ
+  private errorCommentName = "";
+  //コメント名前についてのエラーメッセージ
+  private errorComment = "";
+
+  /**
+   * コメントを追加する.
+   * @remarks
+   * 1)入力に誤りがあった場合はerrorを表示する
+   * 2)ミューテーションのaddCommentメソッドを呼ぶ
+   *   →引数：payload=comment: new Comment(id,⼊⼒したコメント者名,⼊⼒したコメント内容,引数で受け取ったarticleId)
+   * 3)⼊⼒値をフォームからクリアする
+   * @param articleId - 親コンポーネント(Bbs.vue)から受け取った対応する投稿のID
+   */
+  addComment(articleId: number): void {
+    //1)
+    this.errorCommentName = "";
+    this.errorComment = "";
+    if (this.commentName.length > 50) {
+      this.errorCommentName = "名前は50字以内で入力して下さい";
+      return;
+    }
+    if (this.commentName === "" && this.commentContent === "") {
+      this.errorCommentName = "名前を入力して下さい";
+      this.errorComment = "内容を入力してください";
+      return;
+    }
+    if (this.commentName === "") {
+      this.errorCommentName = "名前を入力して下さい";
+      return;
+    }
+    if (this.commentContent === "") {
+      this.errorComment = "内容を入力してください";
+      return;
+    }
+    console.log(articleId);
+    //2)
+    this["$store"].commit(
+      "addComment",
+      new Comment(-1, this.commentName, this.commentContent, articleId)
+    );
+    //3)
+    this.commentName = "";
+    this.commentContent = "";
+  }
+}
+</script>
+
+<style scoped>
+.error {
+  color: red;
+}
+</style>

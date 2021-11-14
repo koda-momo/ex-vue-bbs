@@ -8,8 +8,8 @@ Vue.use(Vuex);
  * stateに掲示板サイトの投稿情報とコメント情報を持たせたindexファイル.
  */
 export default new Vuex.Store({
+  strict: true,
   state: {
-    strict: true,
     articles: [
       new Article(3, "佐藤", "佐藤さんの記事", []),
       new Article(2, "⼭⽥", "⼭⽥さんの記事", [
@@ -36,36 +36,44 @@ export default new Vuex.Store({
     /**
      * 記事を追加する.
      * @remarks
-     * 受け取ったpayload内のarticleをstateのarticlesの0番⽬に追加する
+     * 受け取ったpayload内のarticleをstateのarticlesの0番⽬に追加する.
      * @param state - ステートオブジェクト
      * @param payload - 投稿した記事情報
      */
     addArticle(state, payload) {
-      state.articles.unshift(payload.article);
+      state.articles.unshift(payload);
     },
 
     /**
      * コメントを追加する.
      * @remarks
-     * 渡されたpayload中のartcleIdから追加対象の記事を検索する
-     * 渡されたpayloadからコメントオブジェクトを⽣成する
-     * 記事が存在→CommentListにコメントを追加する
-     * @param state
-     * @param payload articleの配列
+     * 1)渡されたpayload中のartcleIdから追加対象の記事を検索する.
+     * 2)渡されたpayloadからコメントオブジェクトを⽣成する
+     *  →記事が存在：CommentListにコメントを追加する
+     * @param state - ステートオブジェクト
+     * @param payload - 新しいコメントの情報
      */
     addComment(state, payload) {
-      1 + 1;
+      // for (const article of state.articles) {
+      //   if (payload.articleId == article.id) {
+      //     article.commentList.unshift(payload);
+      //   }
+      // }
+      const abc = state.articles.find(
+        (article) => article.id == payload.articleId
+      );
+      abc?.commentList.unshift(payload);
     },
 
     /**
      * 記事を削除する.
      * @remarks
-     * ・渡されたpayload中のarticleIndex番⽬から1件だけstate内のactionsから削除する
-     * @param state
-     * @param payload articleの配列
+     * 渡されたpayload中のarticleIndex番⽬から1件だけstate内のactionsから削除する.
+     * @param state - ステートオブジェクト
+     * @param payload - 現在の投稿の対象ID
      */
     deleteArticle(state, payload) {
-      1 + 1;
+      state.articles.splice(payload, 1);
     },
     //ミュー終わり
   },
