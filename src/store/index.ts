@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import { Article } from "../types/article";
 import { Comment } from "../types/comment";
+import axios from "axios";
 
 Vue.use(Vuex);
 /**
@@ -10,16 +11,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   strict: true,
   state: {
-    articles: [
-      new Article(3, "佐藤", "佐藤さんの記事", []),
-      new Article(2, "⼭⽥", "⼭⽥さんの記事", [
-        new Comment(13, "⼭崎", "⼭崎さんのコメント", 2),
-      ]),
-      new Article(1, "伊藤", "伊藤さんの記事", [
-        new Comment(12, "鈴⽊", "鈴⽊さんのコメント", 1),
-        new Comment(11, "吉⽥", "吉⽥さんのコメント", 1),
-      ]),
-    ],
+    articles: new Array<Article>(),
   },
   getters: {
     /**
@@ -33,6 +25,20 @@ export default new Vuex.Store({
     // ゲッター終わり
   },
   mutations: {
+    /**
+     * 概要：記事⼀覧情報を作成して state に格納する.
+     *
+     * @remarks
+     *元データを回して、自分で作成した配列atricleに上書き
+     *
+     * @param state- ステートオブジェクト
+     * @param payload- (astionから受け取っている、元データを格納している引数)(JSON形式の記事情報)
+     */
+    showArticleList(state, payload) {
+      state.articles = payload.articles;
+      console.log("articles:" + state.articles);
+    },
+
     /**
      * 記事を追加する.
      * @remarks
@@ -62,6 +68,7 @@ export default new Vuex.Store({
       const findArticle = state.articles.find(
         (article) => article.id == payload.articleId
       );
+      console.log(findArticle);
       if (findArticle) {
         findArticle.commentList.unshift(payload);
       }
@@ -79,6 +86,25 @@ export default new Vuex.Store({
     },
     //ミュー終わり
   },
-  actions: {},
+  actions: {
+    /**
+     * 概要︓記事の情報を WebAPI から取得して mutation を呼び出す.
+     * @remarks
+     *1)axios を使⽤してWebAPI を呼ぶ。
+     *2)取得した response データの中の data を取り出して payload 変数に格納する。
+     *3)showEmployeeList という名前のミューテーションを呼び出す。
+     *
+     * @param context-ミューテーションを経由するために設定している引数
+     */
+    async getArticleList(context) {
+      //1)
+      const response = await axios.get(
+        "http://54.203.85.248:8080/ex-bbs-api/bbs/articles"
+      );
+      const payload = response.data;
+      console.dir("response:" + JSON.stringify(payload));
+      context.commit("showArticleList", payload);
+    },
+  }, // end actions
   modules: {},
 });

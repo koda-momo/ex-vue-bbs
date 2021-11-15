@@ -29,6 +29,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Comment } from "../types/comment";
+import axios from "axios";
 @Component
 /**
  * コメント追加部分のコンポーネントです
@@ -57,7 +58,7 @@ export default class Comme extends Vue {
    * 3)⼊⼒値をフォームからクリアする
    * @param articleId - 親コンポーネント(Bbs.vue)から受け取った対応する投稿のID
    */
-  addComment(articleId: number): void {
+  async addComment(articleId: number): Promise<void> {
     //1)
     this.errorCommentName50 = false;
     this.errorCommentName = false;
@@ -78,13 +79,21 @@ export default class Comme extends Vue {
 
     console.log(articleId);
     //2)
-    this["$store"].commit(
-      "addComment",
-      new Comment(-1, this.commentName, this.commentContent, articleId)
-    );
+    await axios.post("http://54.203.85.248:8080/ex-bbs-api/bbs/comment", {
+      name: this.commentName,
+      content: this.commentContent,
+      articleId: articleId,
+    });
+
+    // this["$store"].commit(
+    //   "addComment",
+    //   new Comment(-1, this.commentName, this.commentContent, articleId)
+    // );
     //3)
     this.commentName = "";
     this.commentContent = "";
+
+    this["$store"].dispatch("getArticleList");
   }
 }
 </script>
