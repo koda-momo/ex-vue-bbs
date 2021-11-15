@@ -59,10 +59,12 @@ export default new Vuex.Store({
       //     article.commentList.unshift(payload);
       //   }
       // }
-      const abc = state.articles.find(
+      const findArticle = state.articles.find(
         (article) => article.id == payload.articleId
       );
-      abc?.commentList.unshift(payload);
+      if (findArticle) {
+        findArticle.commentList.unshift(payload);
+      }
     },
 
     /**

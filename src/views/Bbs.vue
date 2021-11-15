@@ -4,9 +4,14 @@
     掲⽰板画⾯
     <!-- 記事投稿画面は1つ -->
     <div>
-      投稿者名： <span class="error">{{ errorName }}</span>
+      投稿者名：
+      <span class="error" v-show="errorName">名前を入力して下さい</span>
+      <span class="error" v-show="errorName50"
+        >名前は50文字以内で入力して下さい</span
+      >
       <div><input type="text" v-model="articleName" /></div>
-      投稿内容： <span class="error">{{ errorContent }}</span>
+      投稿内容：
+      <span class="error" v-show="errorContent">コメントを入力して下さい</span>
       <div>
         <textarea cols="30" rows="10" v-model="articleContent"></textarea>
       </div>
@@ -60,9 +65,11 @@ export default class Bbs extends Vue {
   //投稿内容
   private articleContent = "";
   //投稿名前についてのエラーメッセージ
-  private errorName = "";
+  private errorName = false;
+  //投稿名前についてのエラーメッセージ(51文字以上)
+  private errorName50 = false;
   //投稿内容についてのエラーメッセージ
-  private errorContent = "";
+  private errorContent = false;
 
   /**
    * 記事⼀覧を表⽰する.
@@ -85,25 +92,23 @@ export default class Bbs extends Vue {
    */
   addArticle(): void {
     //1)
-    this.errorName = "";
-    this.errorContent = "";
+    this.errorName50 = false;
+    this.errorName = false;
+    this.errorContent = false;
+
     if (this.articleName.length > 50) {
-      this.errorName = "名前は50字以内で入力して下さい";
-      return;
-    }
-    if (this.articleName === "" && this.articleContent === "") {
-      this.errorName = "名前を入力して下さい";
-      this.errorContent = "内容を入力してください";
-      return;
+      this.errorName50 = true;
     }
     if (this.articleName === "") {
-      this.errorName = "名前を入力して下さい";
-      return;
+      this.errorName = true;
     }
     if (this.articleContent === "") {
-      this.errorContent = "内容を入力してください";
+      this.errorContent = true;
+    }
+    if (this.errorName50 || this.errorName || this.errorContent) {
       return;
     }
+
     //2)
     const newId = this.currentArticleList[0].id + 1;
     //3)

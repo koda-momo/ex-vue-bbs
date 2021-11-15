@@ -4,9 +4,15 @@
 
     <!-- コメント投稿画面は記事ごとに1つ -->
     <div>
-      名前：<span class="error">{{ errorCommentName }}</span>
+      名前：<span class="error" v-show="errorCommentName"
+        >名前を入力して下さい</span
+      ><span class="error" v-show="errorCommentName50"
+        >名前は50文字以内で入力して下さい</span
+      >
       <div><input type="text" v-model="commentName" /></div>
-      コメント：<span class="error">{{ errorComment }}</span>
+      コメント：<span class="error" v-show="errorComment"
+        >内容を入力してください</span
+      >
       <div>
         <textarea cols="30" rows="10" v-model="commentContent"></textarea>
       </div>
@@ -24,6 +30,9 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Comment } from "../types/comment";
 @Component
+/**
+ * コメント追加部分のコンポーネントです
+ */
 export default class Comme extends Vue {
   @Prop()
   //対象の投稿ID(値は親Bbsから受け取り)
@@ -33,9 +42,11 @@ export default class Comme extends Vue {
   //コメント内容
   private commentContent = "";
   //コメント名前についてのエラーメッセージ
-  private errorCommentName = "";
+  private errorCommentName = false;
+  //コメント名前についてのエラーメッセージ(51文字以上)
+  private errorCommentName50 = false;
   //コメント名前についてのエラーメッセージ
-  private errorComment = "";
+  private errorComment = false;
 
   /**
    * コメントを追加する.
@@ -48,25 +59,23 @@ export default class Comme extends Vue {
    */
   addComment(articleId: number): void {
     //1)
-    this.errorCommentName = "";
-    this.errorComment = "";
+    this.errorCommentName50 = false;
+    this.errorCommentName = false;
+    this.errorComment = false;
+
     if (this.commentName.length > 50) {
-      this.errorCommentName = "名前は50字以内で入力して下さい";
-      return;
-    }
-    if (this.commentName === "" && this.commentContent === "") {
-      this.errorCommentName = "名前を入力して下さい";
-      this.errorComment = "内容を入力してください";
-      return;
+      this.errorCommentName50 = true;
     }
     if (this.commentName === "") {
-      this.errorCommentName = "名前を入力して下さい";
-      return;
+      this.errorCommentName = true;
     }
     if (this.commentContent === "") {
-      this.errorComment = "内容を入力してください";
+      this.errorComment = true;
+    }
+    if (this.errorCommentName50 || this.errorCommentName || this.errorComment) {
       return;
     }
+
     console.log(articleId);
     //2)
     this["$store"].commit(
