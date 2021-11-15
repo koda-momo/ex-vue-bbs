@@ -120,31 +120,25 @@ export default class Bbs extends Vue {
     });
     this["$router"].push("/*");
     this.currentArticleList;
-
-    //   //2)
+    //   //2)IDの付与
     //   let newId = 0;
     //   if (this.currentArticleList.length != 0) {
     //     newId = this.currentArticleList[0].id + 1;
     //   } else {
     //     newId = 1;
     //   }
+    // //3)API不使用時
+    //   this["$store"].commit(
+    //     "addArticle",
+    //     new Article(newId, this.articleName, this.articleContent, [])
+    //   );
 
-    //4)
+    //3)
     this.articleName = "";
     this.articleContent = "";
 
     this["$store"].dispatch("getArticleList");
   }
-
-  //   //3)
-  //   this["$store"].commit(
-  //     "addArticle",
-  //     new Article(newId, this.articleName, this.articleContent, [])
-  //   );
-  //   //4)
-  //   this.articleName = "";
-  //   this.articleContent = "";
-  // }
 
   /**
    * 記事を削除する.

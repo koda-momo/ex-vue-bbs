@@ -84,7 +84,7 @@ export default class Comme extends Vue {
       content: this.commentContent,
       articleId: articleId,
     });
-
+    //API不使用時
     // this["$store"].commit(
     //   "addComment",
     //   new Comment(-1, this.commentName, this.commentContent, articleId)
